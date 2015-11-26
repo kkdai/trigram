@@ -1,5 +1,7 @@
 package trigram
 
+import "fmt"
+
 type Trigram uint32
 
 //The trigram indexing result include all Document IDs and its Frequence in that document
@@ -32,6 +34,7 @@ type TrigramIndex struct {
 	//To store all current trigram indexing result
 	TrigramMap map[Trigram]IndexResult
 
+	//it represent and document incremental index
 	maxDocID int
 }
 
@@ -88,8 +91,42 @@ func (t *TrigramIndex) Delete(doc string, docID int) {
 	}
 }
 
-func (t *TrigramIndex) Query(doc string) []int {
+func IntersectTwoMap(IDsA, IDsB map[int]bool) map[int]bool {
+	var retIDs map[int]bool //for traversal it is smaller one
+	var refIDs map[int]bool //for checking it is bigger one
+	if len(IDsA) >= len(IDsB) {
+		retIDs = IDsB
+		refIDs = IDsA
 
+	} else {
+		retIDs = IDsA
+		refIDs = IDsB
+	}
+
+	workIds := retIDs //copy for iterator
+	for id, _ := range workIds {
+		if _, exist := refIDs[id]; !exist {
+			delete(retIDs, id)
+		}
+	}
+	return retIDs
+}
+
+func (t *TrigramIndex) Query(doc string) []int {
+	trigrams := ExtractStringToTrigram(doc)
+	if len(trigrams) == 0 {
+		return nil
+	}
+
+	retIDs, exist := t.TrigramMap[trigrams[0]]
+	if !exist {
+		return nil
+	}
+
+	remainTrigrams := trigrams[1:]
+	for _, tg := range remainTrigrams {
+		fmt.Println(retIDs, tg)
+	}
 	return nil
 }
 
