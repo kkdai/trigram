@@ -8,6 +8,17 @@ This package provide a simple way to "Trigram Indexing" in input document. It is
 
 Here is the [introduction](http://www.evanlin.com/trigram-study-note/) what is "trigram indexing" and how Google Code Search use it for search but it is in Chinese :) .
 
+
+How it works
+---------------
+
+This package using [trigram indexing](https://swtch.com/~rsc/regexp/regexp4.html) to get all trigram in input string (what we call document).
+
+Here is some trigram rule as follow:
+
+- It will not transfer Upper case	 to Lower case. (follow code search rule)
+- Includes "space"
+
  
 Install
 ---------------
