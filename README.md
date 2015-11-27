@@ -68,7 +68,7 @@ BenchmarkQuery-4 	   10000	      7894005 ns/op
 BenchmarkIntersect-4  300000	      4496 ns/op
 ```
 
-BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram) for record to my feature improvement:
+BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram) for my improvement record:
 
 ```
 BenchmarkAdd-4   	 1000000	      1063 ns/op
