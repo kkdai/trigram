@@ -6,10 +6,9 @@ Trigram Indexing
 
 This package provide a simple way to "Trigram Indexing" in input document. It is refer from an article - [Google Code Search](https://github.com/google/codesearch).
 
+Here is the introduction what is "trigram indexing" and how Google Code Search use it for search but it is in Chinese :) .
 
-
-
-
+ 
 Install
 ---------------
 `go get github.com/kkdai/trigram`
