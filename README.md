@@ -42,7 +42,7 @@ func main() {
 	ti.Add("Search")						//doc 2
 	ti.Add("I write a lot of Codes") //doc 3
 	
-	//Print all trigram mp 
+	//Print all trigram map 
 	fmt.Println("It has ", len(ti.TrigramMap))
 	for k, v := range ti.TrigramMap {
 		fmt.Println("trigram=", k, " obj=", v)
