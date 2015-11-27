@@ -1,7 +1,6 @@
 package trigram_test
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/kkdai/trigram"
@@ -55,7 +54,6 @@ func TestTrigramIndexBasicQuery(t *testing.T) {
 	ti.Add("I write a lot of Codes")
 
 	ret := ti.Query("Code")
-	fmt.Println(ret)
 	if ret[0] != 1 || ret[1] != 3 {
 		t.Errorf("Basic query is failed.")
 	}
@@ -76,5 +74,20 @@ func TestEmptyLessQuery(t *testing.T) {
 	if len(ret) != 3 || ret[0] != 1 || ret[2] != 3 {
 		t.Errorf("Error on empty character query")
 	}
+}
 
+func TestDelete(t *testing.T) {
+	ti := NewTrigramIndex()
+	ti.Add("Code is my life")
+
+	ti.Delete("Code", 1)
+	ret := ti.Query("Code")
+	if len(ret) != 0 {
+		t.Errorf("Basic delete failed", ret)
+	}
+
+	ret = ti.Query("life")
+	if len(ret) != 1 || ret[0] != 1 {
+		t.Errorf("Basic delete failed", ret)
+	}
 }

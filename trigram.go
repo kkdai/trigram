@@ -100,7 +100,15 @@ func (t *TrigramIndex) Delete(doc string, docID int) {
 				delete(obj.Freq, docID)
 				delete(obj.DocIDs, docID)
 			}
-			t.TrigramMap[tg] = obj
+
+			if len(obj.DocIDs) == 0 {
+				//this object become empty remove this.
+				delete(t.TrigramMap, tg)
+				//TODO check if some doc id has no tg remove
+			} else {
+				//update back since there still other doc id exist
+				t.TrigramMap[tg] = obj
+			}
 		} else {
 			//trigram not exist in map, leave
 			return
