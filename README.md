@@ -56,6 +56,26 @@ func main() {
 ```
 
 
+Benchmark
+---------------
+
+Still working to improve the query time.
+
+```
+BenchmarkAdd-4   	  300000	      6743 ns/op
+BenchmarkDelete-4	  500000	      4021 ns/op
+BenchmarkQuery-4 	   10000	   7894005 ns/op
+
+```
+
+BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram):
+
+```
+BenchmarkAdd-4   	 1000000	      1063 ns/op
+BenchmarkDelete-4	  100000	    140392 ns/op
+BenchmarkQuery-4 	   10000	    474320 ns/op
+```
+
 Inspired
 ---------------
 

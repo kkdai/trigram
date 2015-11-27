@@ -91,3 +91,39 @@ func TestDelete(t *testing.T) {
 		t.Error("Basic delete failed", ret)
 	}
 }
+
+func BenchmarkAdd(b *testing.B) {
+	big := NewTrigramIndex()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+}
+
+func BenchmarkDelete(b *testing.B) {
+
+	big := NewTrigramIndex()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Delete("1234567890", i)
+	}
+}
+
+func BenchmarkQuery(b *testing.B) {
+
+	big := NewTrigramIndex()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Query("1234567890")
+	}
+}
