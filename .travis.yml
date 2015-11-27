@@ -1,3 +1,5 @@
+language: go
+
 go:
     - 1.5
     - tip
@@ -14,4 +16,4 @@ script:
 #    - $HOME/gopath/bin/goveralls -coverprofile=coverage.cov -service=travis-ci
 #    - bash <(curl -s https://codecov.io/bash)
     - go test -bench=. -benchmem ./...
-    #- sh ./install_all_cmd.shanguage: go
+    #- sh ./install_all_cmd.sh
