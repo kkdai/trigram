@@ -36,11 +36,16 @@ type TrigramIndex struct {
 
 	//it represent and document incremental index
 	maxDocID int
+
+	//it include currently all the doc list, it will be used when query string length less than 3
+	docIDsMap map[int]bool
 }
 
-func NewTrigramIndex([]string) *TrigramIndex {
+//Create a new trigram indexing
+func NewTrigramIndex() *TrigramIndex {
 	t := new(TrigramIndex)
 	t.TrigramMap = make(map[Trigram]IndexResult)
+	t.docIDsMap = make(map[int]bool)
 	return t
 }
 
@@ -53,21 +58,30 @@ func (t *TrigramIndex) Add(doc string) int {
 		var exist bool
 		if mapRet, exist = t.TrigramMap[tg]; !exist {
 			//New doc ID handle
+			fmt.Println("tg=", tg, " not exist!")
 			mapRet = IndexResult{}
 			mapRet.DocIDs = make(map[int]bool)
 			mapRet.Freq = make(map[int]int)
 			mapRet.DocIDs[newDocID] = true
 			mapRet.Freq[newDocID] = 1
 		} else {
+			fmt.Println("tg=", tg, " exist!")
 			//trigram already exist on this doc
 			if _, docExist := mapRet.DocIDs[newDocID]; docExist {
+				fmt.Println("docID:", newDocID, " eixst")
 				mapRet.Freq[newDocID] = mapRet.Freq[newDocID] + 1
+			} else {
+				//tg eixist but new doc id is not exist, add it
+				mapRet.DocIDs[newDocID] = true
+				fmt.Println("docID:", newDocID, " not eixst")
+				mapRet.Freq[newDocID] = 1
 			}
 		}
 		//Store or Add  result
 		t.TrigramMap[tg] = mapRet
 	}
 
+	t.maxDocID = newDocID
 	return newDocID
 }
 
@@ -91,49 +105,64 @@ func (t *TrigramIndex) Delete(doc string, docID int) {
 	}
 }
 
+//This function help you to intersect two map
 func IntersectTwoMap(IDsA, IDsB map[int]bool) map[int]bool {
-	var retIDs map[int]bool //for traversal it is smaller one
-	var refIDs map[int]bool //for checking it is bigger one
+	var retIDs map[int]bool   //for traversal it is smaller one
+	var checkIDs map[int]bool //for checking it is bigger one
 	if len(IDsA) >= len(IDsB) {
 		retIDs = IDsB
-		refIDs = IDsA
+		checkIDs = IDsA
 
 	} else {
 		retIDs = IDsA
-		refIDs = IDsB
+		checkIDs = IDsB
 	}
 
-	workIds := retIDs //copy for iterator
-	for id, _ := range workIds {
-		if _, exist := refIDs[id]; !exist {
+	for id, _ := range retIDs {
+		if _, exist := checkIDs[id]; !exist {
 			delete(retIDs, id)
 		}
 	}
 	return retIDs
 }
 
+//Query a target string to return the doc ID
 func (t *TrigramIndex) Query(doc string) []int {
 	trigrams := ExtractStringToTrigram(doc)
 	if len(trigrams) == 0 {
 		return nil
 	}
 
-	retIDs, exist := t.TrigramMap[trigrams[0]]
+	//Find first trigram as base for intersect
+	retObj, exist := t.TrigramMap[trigrams[0]]
 	if !exist {
 		return nil
 	}
+	retIDs := retObj.DocIDs
 
-	remainTrigrams := trigrams[1:]
-	for _, tg := range remainTrigrams {
-		fmt.Println(retIDs, tg)
+	//Remove first one and do intersect with other trigram
+	trigrams = trigrams[1:]
+	for _, tg := range trigrams {
+		checkObj, exist := t.TrigramMap[tg]
+		if !exist {
+			return nil
+		}
+		checkIDs := checkObj.DocIDs
+		retIDs = IntersectTwoMap(retIDs, checkIDs)
 	}
-	return nil
+
+	return getMapToSlice(retIDs)
+}
+
+//Transfer map to slice for return result
+func getMapToSlice(inMap map[int]bool) []int {
+	var retSlice []int
+	for k, _ := range inMap {
+		retSlice = append(retSlice, k)
+	}
+	return retSlice
 }
 
 func (t *TrigramIndex) getAllDocIDs() []int {
-	var retIDs []int
-	for i := 0; i <= t.maxDocID; i++ {
-		retIDs = append(retIDs, i)
-	}
-	return retIDs
+	return getMapToSlice(t.docIDsMap)
 }

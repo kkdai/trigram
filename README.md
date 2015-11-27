@@ -4,7 +4,9 @@ Trigram Indexing
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kkdai/trigram/master/LICENSE)  [![GoDoc](https://godoc.org/github.com/kkdai/trigram?status.svg)](https://godoc.org/github.com/kkdai/trigram)  [![Build Status](https://travis-ci.org/kkdai/trigram.svg?branch=master)](https://travis-ci.org/kkdai/trigram)
 
 
-Trigram Phrase Matching is a method of identifying phrases that have a high probability of being synonyms. It is based on representing each phrase by a set of character trigrams that are extracted from that phrase. The character trigrams are used as key terms in a representation of the phrase much as words are used as key terms to represent a document. The similarity of phrases is then computed using the vector cosine similarity measure.  (cited from [here](http://ii.nlm.nih.gov/MTI/Details/trigram.shtml))
+This package provide a simple way to "Trigram Indexing" in input document. It is refer from an article - [Google Code Search](https://github.com/google/codesearch).
+
+
 
 
 
@@ -18,7 +20,29 @@ Usage
 
 ```go
 
+package main
 
+import (
+	"fmt"
+	. "github.com/kkdai/trigram"
+	)
+func main() {	
+	ti := NewTrigramIndex()
+	ti.Add("Code is my life")			//doc 1
+	ti.Add("Search")						//doc 2
+	ti.Add("I write a lot of Codes") //doc 3
+	
+	//Print all trigram mp 
+	fmt.Println("It has ", len(ti.TrigramMap))
+	for k, v := range ti.TrigramMap {
+		fmt.Println("trigram=", k, " obj=", v)
+	}
+
+	//Search which doc include this code
+	ret := ti.Query("Code")
+	fmt.Println("Query ret=", ret)
+	// [1, 3]
+}
 ```
 
 

@@ -29,13 +29,11 @@ func TestMapIntersect(t *testing.T) {
 	mapB[1] = true
 
 	ret := IntersectTwoMap(mapA, mapB)
-	fmt.Println(mapA, mapB, ret, ret[1], ret[2])
 	if len(ret) != 1 || ret[1] == false {
 		t.Errorf("Map intersect error")
 	}
 
 	ret = IntersectTwoMap(mapB, mapA)
-	fmt.Println(mapA, mapB, ret, ret[1], ret[2])
 	if len(ret) != 1 || ret[1] == false {
 		t.Errorf("Map intersect error")
 	}
@@ -45,8 +43,20 @@ func TestMapIntersect(t *testing.T) {
 	mapA[4] = true
 
 	ret = IntersectTwoMap(mapB, mapA)
-	fmt.Println(mapA, mapB, ret)
 	if len(ret) != 2 || ret[1] == false {
 		t.Errorf("Map intersect error")
+	}
+}
+
+func TestTrigramIndexAdd(t *testing.T) {
+	ti := NewTrigramIndex()
+	ti.Add("Code is my life")
+	ti.Add("Search")
+	ti.Add("I write a lot of Codes")
+
+	ret := ti.Query("Code")
+	fmt.Println(ret)
+	if ret[0] != 1 || ret[1] != 3 {
+		t.Errorf("Basic query is failed.")
 	}
 }
