@@ -48,7 +48,7 @@ func TestMapIntersect(t *testing.T) {
 	}
 }
 
-func TestTrigramIndexAdd(t *testing.T) {
+func TestTrigramIndexBasicQuery(t *testing.T) {
 	ti := NewTrigramIndex()
 	ti.Add("Code is my life")
 	ti.Add("Search")
@@ -59,4 +59,22 @@ func TestTrigramIndexAdd(t *testing.T) {
 	if ret[0] != 1 || ret[1] != 3 {
 		t.Errorf("Basic query is failed.")
 	}
+}
+
+func TestEmptyLessQuery(t *testing.T) {
+	ti := NewTrigramIndex()
+	ti.Add("Code is my life")
+	ti.Add("Search")
+	ti.Add("I write a lot of Codes")
+
+	ret := ti.Query("te") //less than 3, should get all doc ID
+	if len(ret) != 3 || ret[0] != 1 || ret[2] != 3 {
+		t.Errorf("Error on less than 3 character query")
+	}
+
+	ret = ti.Query("")
+	if len(ret) != 3 || ret[0] != 1 || ret[2] != 3 {
+		t.Errorf("Error on empty character query")
+	}
+
 }

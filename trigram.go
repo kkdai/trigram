@@ -1,8 +1,14 @@
 package trigram
 
-import "fmt"
+import "sort"
 
 type Trigram uint32
+
+type docList []int
+
+func (d docList) Len() int           { return len(d) }
+func (d docList) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
+func (d docList) Less(i, j int) bool { return d[i] < d[j] }
 
 //The trigram indexing result include all Document IDs and its Frequence in that document
 type IndexResult struct {
@@ -58,22 +64,18 @@ func (t *TrigramIndex) Add(doc string) int {
 		var exist bool
 		if mapRet, exist = t.TrigramMap[tg]; !exist {
 			//New doc ID handle
-			fmt.Println("tg=", tg, " not exist!")
 			mapRet = IndexResult{}
 			mapRet.DocIDs = make(map[int]bool)
 			mapRet.Freq = make(map[int]int)
 			mapRet.DocIDs[newDocID] = true
 			mapRet.Freq[newDocID] = 1
 		} else {
-			fmt.Println("tg=", tg, " exist!")
 			//trigram already exist on this doc
 			if _, docExist := mapRet.DocIDs[newDocID]; docExist {
-				fmt.Println("docID:", newDocID, " eixst")
 				mapRet.Freq[newDocID] = mapRet.Freq[newDocID] + 1
 			} else {
 				//tg eixist but new doc id is not exist, add it
 				mapRet.DocIDs[newDocID] = true
-				fmt.Println("docID:", newDocID, " not eixst")
 				mapRet.Freq[newDocID] = 1
 			}
 		}
@@ -82,6 +84,7 @@ func (t *TrigramIndex) Add(doc string) int {
 	}
 
 	t.maxDocID = newDocID
+	t.docIDsMap[newDocID] = true
 	return newDocID
 }
 
@@ -127,10 +130,10 @@ func IntersectTwoMap(IDsA, IDsB map[int]bool) map[int]bool {
 }
 
 //Query a target string to return the doc ID
-func (t *TrigramIndex) Query(doc string) []int {
+func (t *TrigramIndex) Query(doc string) docList {
 	trigrams := ExtractStringToTrigram(doc)
 	if len(trigrams) == 0 {
-		return nil
+		return t.getAllDocIDs()
 	}
 
 	//Find first trigram as base for intersect
@@ -152,17 +155,19 @@ func (t *TrigramIndex) Query(doc string) []int {
 	}
 
 	return getMapToSlice(retIDs)
+
 }
 
 //Transfer map to slice for return result
-func getMapToSlice(inMap map[int]bool) []int {
-	var retSlice []int
+func getMapToSlice(inMap map[int]bool) docList {
+	var retSlice docList
 	for k, _ := range inMap {
 		retSlice = append(retSlice, k)
 	}
+	sort.Sort(retSlice)
 	return retSlice
 }
 
-func (t *TrigramIndex) getAllDocIDs() []int {
+func (t *TrigramIndex) getAllDocIDs() docList {
 	return getMapToSlice(t.docIDsMap)
 }
