@@ -9,7 +9,7 @@ import (
 func TestTrigramlize(t *testing.T) {
 	ret := ExtractStringToTrigram("Cod")
 	if ret[0] != 4419428 {
-		t.Errorf("Trigram failed, expect 4419428 get %u\n", ret[0])
+		t.Errorf("Trigram failed, expect 4419428\n")
 	}
 
 	//string length longer than 3
@@ -83,11 +83,11 @@ func TestDelete(t *testing.T) {
 	ti.Delete("Code", 1)
 	ret := ti.Query("Code")
 	if len(ret) != 0 {
-		t.Errorf("Basic delete failed", ret)
+		t.Error("Basic delete failed", ret)
 	}
 
 	ret = ti.Query("life")
 	if len(ret) != 1 || ret[0] != 1 {
-		t.Errorf("Basic delete failed", ret)
+		t.Error("Basic delete failed", ret)
 	}
 }
