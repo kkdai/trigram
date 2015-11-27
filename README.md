@@ -64,11 +64,11 @@ Still working to improve the query time.
 ```
 BenchmarkAdd-4   	  300000	      6743 ns/op
 BenchmarkDelete-4	  500000	      4021 ns/op
-BenchmarkQuery-4 	   10000	   7894005 ns/op
-
+BenchmarkQuery-4 	   10000	      7894005 ns/op
+BenchmarkIntersect-4  300000	      4496 ns/op
 ```
 
-BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram):
+BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram) for record to my feature improvement:
 
 ```
 BenchmarkAdd-4   	 1000000	      1063 ns/op

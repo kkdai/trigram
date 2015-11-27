@@ -127,3 +127,18 @@ func BenchmarkQuery(b *testing.B) {
 		big.Query("1234567890")
 	}
 }
+
+func BenchmarkIntersect(b *testing.B) {
+
+	DocA := make(map[int]bool)
+	DocB := make(map[int]bool)
+	for i := 0; i < 101; i++ {
+		DocA[i] = true
+		DocB[i+1] = true
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		IntersectTwoMap(DocA, DocB)
+	}
+}
